@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>花草中学 · 官网下载</title>
+<meta name="description" content="花草中学 —— 第一人称校园冒险，支持安卓与网页版畅玩。" />
+<script>document.documentElement.classList.add('anim');</script>
+<style>
+  :root{
+    --bg:#070b12;
+    --bg-2:#0a0f19;
+    --surface:rgba(255,255,255,.045);
+    --surface-2:rgba(255,255,255,.075);
+    --line:rgba(255,255,255,.08);
+    --line-2:rgba(255,255,255,.14);
+    --text:#eef2fb;
+    --muted:#9aa8c2;
+    --faint:#6b7894;
+    --accent:#4a8cff;
+    --accent-2:#79b0ff;
+    --accent-soft:rgba(74,140,255,.13);
+    --accent-line:rgba(74,140,255,.30);
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:84px;background:var(--bg)}
+  body{
+    margin:0;color:var(--text);line-height:1.6;position:relative;overflow-x:hidden;
+    background:
+      radial-gradient(900px 540px at 50% -12%, rgba(74,140,255,.20), transparent 62%),
+      radial-gradient(760px 520px at 104% 2%, rgba(122,92,255,.12), transparent 58%),
+      radial-gradient(700px 500px at -6% 24%, rgba(74,140,255,.08), transparent 60%),
+      linear-gradient(180deg,var(--bg),var(--bg-2) 60%,var(--bg));
+    background-attachment:fixed;
+    font-family:"PingFang SC","Microsoft YaHei",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* 顶部细网点纹理（静态，营造质感；往下淡出） */
+  body::before{
+    content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:radial-gradient(rgba(255,255,255,.055) 1px, transparent 1px);
+    background-size:22px 22px;
+    -webkit-mask-image:radial-gradient(ellipse 85% 55% at 50% -5%, #000, transparent 72%);
+    mask-image:radial-gradient(ellipse 85% 55% at 50% -5%, #000, transparent 72%);
+  }
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+  /* 顶栏 */
+  header{position:sticky;top:0;z-index:20;border-bottom:1px solid var(--line);
+    background:rgba(7,11,18,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.4px}
+  .brand::before{content:'';width:20px;height:20px;border-radius:6px;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 0 16px rgba(74,140,255,.55)}
+  nav{display:flex;gap:26px;font-size:14px;color:var(--muted)}
+  nav a{transition:color .18s ease}
+  nav a:hover{color:var(--text)}
+  @media (max-width:640px){ nav{display:none} }
+
+  /* 首屏 */
+  .hero{padding:108px 0 88px;text-align:center;position:relative}
+  h1{margin:0 0 18px;font-size:clamp(38px,6vw,60px);line-height:1.08;font-weight:800;letter-spacing:-1px;
+    background:linear-gradient(180deg,#ffffff,#c3d7ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lede{margin:0 auto 34px;font-size:clamp(15px,2vw,18px);color:var(--muted);max-width:620px;line-height:1.7}
+  .actions{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:24px;justify-content:center}
+  .btn{display:inline-flex;align-items:center;gap:9px;padding:14px 24px;border-radius:12px;font-size:15px;font-weight:600;
+    border:1px solid transparent;cursor:pointer;white-space:nowrap;
+    transition:background .18s ease,border-color .18s ease,color .18s ease,transform .14s ease,box-shadow .22s ease}
+  .btn svg{width:17px;height:17px}
+  .btn-primary{background:linear-gradient(180deg,var(--accent-2),var(--accent));color:#041226;
+    box-shadow:0 10px 28px rgba(74,140,255,.35),inset 0 1px 0 rgba(255,255,255,.28)}
+  .btn-primary:hover{box-shadow:0 14px 36px rgba(74,140,255,.5),inset 0 1px 0 rgba(255,255,255,.35)}
+  .btn-secondary{background:rgba(255,255,255,.04);border-color:var(--line-2);color:var(--text)}
+  .btn-secondary:hover{border-color:var(--accent);color:var(--accent-2);background:rgba(74,140,255,.08)}
+  .btn:active{transform:translateY(1px)}
+  .btn[aria-disabled="true"]{opacity:.5;pointer-events:none;box-shadow:none}
+  .meta{display:flex;flex-wrap:wrap;gap:9px;justify-content:center}
+  .meta span{font-size:12.5px;color:var(--muted);border:1px solid var(--line);background:rgba(255,255,255,.03);
+    border-radius:999px;padding:5px 12px}
+
+  /* 区块 */
+  section{padding:66px 0;border-top:1px solid var(--line);text-align:center}
+  h2{margin:0;font-size:clamp(22px,3vw,28px);font-weight:700;letter-spacing:-.3px}
+  h2::after{content:'';display:block;width:34px;height:3px;border-radius:3px;margin:16px auto 0;
+    background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+  .sec-note{margin:16px 0 40px;color:var(--faint);font-size:14.5px}
+
+  /* 特色 */
+  .grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(218px,1fr));gap:16px}
+  .cell{background:linear-gradient(180deg,var(--surface),rgba(255,255,255,.015));
+    border:1px solid var(--line);border-radius:var(--radius);padding:28px 22px;
+    transition:transform .2s ease,border-color .2s ease,box-shadow .25s ease,background .2s ease}
+  .cell:hover{transform:translateY(-4px);border-color:var(--accent-line);
+    box-shadow:0 18px 40px rgba(0,0,0,.42),0 0 0 1px var(--accent-line)}
+  .ico{display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:13px;
+    background:var(--accent-soft);border:1px solid var(--accent-line);color:var(--accent-2);
+    margin-bottom:16px;transition:transform .25s cubic-bezier(.3,1.4,.5,1),background-color .2s ease,color .2s ease;
+    animation:icoGlow 3.6s ease-in-out infinite}
+  .ico svg{width:23px;height:23px;animation:icoIdle 3.6s ease-in-out infinite}
+  .cell:nth-child(2) .ico,.cell:nth-child(2) .ico svg{animation-delay:.45s}
+  .cell:nth-child(3) .ico,.cell:nth-child(3) .ico svg{animation-delay:.9s}
+  .cell:nth-child(4) .ico,.cell:nth-child(4) .ico svg{animation-delay:1.35s}
+  .cell:hover .ico{transform:translateY(-2px) scale(1.06);background:rgba(74,140,255,.22);color:#a9ccff;animation-play-state:paused}
+  .cell:hover .ico svg{animation-play-state:paused}
+  .cell h3{margin:0 0 7px;font-size:15.5px;font-weight:600}
+  .cell p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.68}
+
+  /* 下载 */
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:820px;margin:0 auto}
+  @media (max-width:720px){ .cards{grid-template-columns:1fr} }
+  .card{background:linear-gradient(180deg,var(--surface),rgba(255,255,255,.015));
+    border:1px solid var(--line);border-radius:var(--radius);padding:30px;
+    display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;
+    transition:transform .2s ease,border-color .2s ease,box-shadow .25s ease}
+  .card:hover{transform:translateY(-4px);border-color:var(--accent-line);box-shadow:0 18px 44px rgba(0,0,0,.44)}
+  .card h3{margin:0;font-size:18px;font-weight:700}
+  .card p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.7}
+  .card .tags{display:flex;flex-wrap:wrap;gap:7px;justify-content:center}
+  .card .tags span{font-size:12px;color:var(--faint);border:1px solid var(--line);border-radius:999px;padding:4px 11px}
+  .card .btn{align-self:center;margin-top:auto}
+  .hint{color:#e0b341;font-size:13px;margin:0}
+
+  /* 安装说明 */
+  ol{margin:0 auto;padding:0;list-style:none;counter-reset:n;display:grid;gap:16px;max-width:720px}
+  ol li{counter-increment:n;display:flex;gap:12px;font-size:14.5px;color:var(--muted);justify-content:center}
+  ol li::before{content:counter(n);flex:0 0 auto;width:24px;height:24px;border-radius:50%;
+    border:1px solid var(--accent-line);color:var(--accent-2);background:var(--accent-soft);
+    font-size:12.5px;display:flex;align-items:center;justify-content:center;margin-top:2px}
+  ol b{color:var(--text);font-weight:600}
+
+  footer{border-top:1px solid var(--line);padding:32px 0 60px;color:var(--faint);font-size:12.5px;text-align:center;position:relative;z-index:1}
+  footer a{color:var(--muted)}
+  footer a:hover{color:var(--accent-2)}
+  footer code{background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:1px 7px;color:var(--muted)}
+
+  /* 动效（仅进场 + 图标 + 悬停）：全部挂在 html.anim 下，脚本没跑也不会白屏 */
+  .anim .fade{opacity:0;transform:translateY(10px);transition:opacity .55s ease,transform .55s ease}
+  .anim .fade.in{opacity:1;transform:none}
+  .anim .fade.d1{transition-delay:.06s} .anim .fade.d2{transition-delay:.12s} .anim .fade.d3{transition-delay:.18s}
+  @keyframes icoIdle{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-2px) scale(1.05)}}
+  @keyframes icoGlow{0%,100%{box-shadow:0 0 0 rgba(74,140,255,0)}50%{box-shadow:0 0 16px rgba(74,140,255,.30)}}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{transition:none!important;animation:none!important}
+    .fade{opacity:1!important;transform:none!important}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brand" id="brand">花草中学</div>
+    <nav>
+      <a href="#features">特色</a>
+      <a href="#download">下载</a>
+      <a href="#install">安装</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <h1 class="fade" id="title">花草中学</h1>
+      <p class="lede fade d1" id="lede">第一人称校园冒险。手机、电脑都能玩，打开就能进。</p>
+      <div class="actions fade d2" id="actions"></div>
+      <div class="meta fade d3" id="meta"></div>
+    </div>
+  </section>
+
+  <section id="features">
+    <div class="wrap">
+      <h2 class="fade">游戏特色</h2>
+      <p class="sec-note fade d1">在代码顶部的 SITE.features 里改（含图标）。</p>
+      <div class="grid-4" id="features"></div>
+    </div>
+  </section>
+
+  <section id="download">
+    <div class="wrap">
+      <h2 class="fade">下载与游玩</h2>
+      <p class="sec-note fade d1">安卓下载安装包，或直接在浏览器里玩网页版。</p>
+      <div class="cards" id="download-cards"></div>
+    </div>
+  </section>
+
+  <section id="install">
+    <div class="wrap">
+      <h2 class="fade">安卓安装说明</h2>
+      <p class="sec-note fade d1">装不上时按这几步排查。</p>
+      <ol class="fade d2" id="steps"></ol>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div id="foot-brand">花草中学</div>
+    <div>网页版：<a id="foot-web" href="#" target="_blank" rel="noopener"></a></div>
+    <div id="foot-note" class="hint"></div>
+    <div style="margin-top:12px">下载链接在文件顶部的 <code>SITE</code> 配置里改。</div>
+  </div>
+</footer>
+
+<script>
+/* =====================================================================================
+   ★ 官网内容 + 下载链接：都在下面这个 SITE 里改 ★
+
+   android.url  安卓 APK 直链（留空则按钮显示"准备中"）
+   web.url      网页版地址
+   features[].icon  图标的 SVG 内部内容（24×24 画布；可用 <path>/<circle>/<rect>/<line> 等）
+===================================================================================== */
+const SITE = {
+  name: '花草中学',
+  lede: '第一人称校园冒险。手机、电脑都能玩，打开就能进。',
+  version: 'v1.0.0',
+  updated: '2026-10-03',
+
+  android: {
+    url: 'https://github.com/CqwqY/game/releases/download/0.0.1/app-debug.apk',  // 安卓 APK 直链
+    size: '',                      // 可填安装包大小，如 '48 MB'（留空则不显示）
+    min: 'Android 8.0 及以上',
+    qr: '',                        // 可选：二维码图片链接
+    note: '下载 .apk 后点击安装；若提示"未知来源"，允许一次即可。',
+  },
+
+  web: {
+    url: 'https://play.caiyz.dpdns.org',
+    qr: '',                        // 可选：二维码图片链接
+    note: '浏览器直接打开，无需安装。',
+  },
+
+  features: [
+    {
+      title: '第一人称操作',
+      desc: '键盘与触屏都可操作，走路、跳跃、抓钩、载具齐全。',
+      icon: '<circle cx="12" cy="12" r="6.4"/><circle cx="12" cy="12" r="1.1"/><path d="M12 2.4v3.2M12 18.4v3.2M2.4 12h3.2M18.4 12h3.2"/>',
+    },
+    {
+      title: '联机同房',
+      desc: '和同学进同一房间，实时看到彼此。',
+      icon: '<circle cx="9" cy="8.4" r="3"/><path d="M3.6 19.6a5.4 5.4 0 0 1 10.8 0"/><path d="M15.4 6.3a3 3 0 0 1 0 5.6"/><path d="M17.6 19.6a5.6 5.6 0 0 0-2.1-4.3"/>',
+    },
+    {
+      title: '校园场景',
+      desc: '熟悉的校园地图，也可用编辑器自行搭建。',
+      icon: '<path d="M3 21h18"/><path d="M5 21V9.4L12 5l7 4.4V21"/><path d="M9.6 21v-5.4h4.8V21"/><path d="M9 11.4h.01M15 11.4h.01"/>',
+    },
+    {
+      title: '多端畅玩',
+      desc: '安卓与网页版同源，进度与功能一致。',
+      icon: '<rect x="2.5" y="4.5" width="12" height="8.4" rx="1.5"/><path d="M6.6 17h5"/><path d="M9 12.9V17"/><rect x="16.6" y="9.6" width="4.9" height="9.4" rx="1.5"/><path d="M19 16.6h.01"/>',
+    },
+  ],
+
+  steps: [
+    '点击「下载安卓版」，下载 <b>.apk</b> 安装包。',
+    '打开安装包；若系统提示「未知来源」，选择 <b>允许</b> 后继续。',
+    '安装完成后打开游戏登录即可；不想装 App 可直接用<b>网页版</b>。',
+  ],
+};
+/* ===================================================================================== */
+
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) =>
+  ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+/* 把配置里的图标内容包成统一的线性 SVG（图标始终实心可见，不做隐形描边） */
+function iconSvg(inner) {
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${String(inner || '')}</svg>`;
+}
+
+const svgDL   = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>';
+const svgPlay = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5l6 3.5-6 3.5z" fill="currentColor" stroke="none"/></svg>';
+
+document.title = SITE.name + ' · 官网下载';
+$('#brand').textContent = SITE.name;
+$('#title').textContent = SITE.name;
+$('#lede').textContent = SITE.lede;
+$('#foot-brand').textContent = SITE.name;
+
+/* 顶部两个按钮 */
+$('#actions').innerHTML =
+  (SITE.android.url
+    ? `<a class="btn btn-primary" href="${esc(SITE.android.url)}" download>${svgDL}下载安卓版${SITE.android.size ? ` · ${esc(SITE.android.size)}` : ''}</a>`
+    : `<span class="btn btn-primary" aria-disabled="true">${svgDL}下载安卓版 · 准备中</span>`) +
+  `<a class="btn btn-secondary" href="${esc(SITE.web.url)}" target="_blank" rel="noopener">${svgPlay}网页版直接玩</a>`;
+
+$('#meta').innerHTML = [SITE.version, '更新于 ' + SITE.updated, '安卓 · 网页']
+  .filter(Boolean).map((t) => `<span>${esc(t)}</span>`).join('');
+
+/* 特色（带图标） */
+$('#features').innerHTML = SITE.features.map((f) =>
+  `<div class="cell fade"><span class="ico">${iconSvg(f.icon)}</span><h3>${esc(f.title)}</h3><p>${esc(f.desc)}</p></div>`).join('');
+
+/* 下载卡片 */
+const androidCard =
+  `<h3>安卓版 App</h3>
+   <p>${esc(SITE.android.note)}</p>
+   <div class="tags"><span>${esc(SITE.android.min)}</span><span>${esc(SITE.version)}</span>${SITE.android.size ? `<span>${esc(SITE.android.size)}</span>` : ''}</div>
+   ${SITE.android.url
+      ? `<a class="btn btn-primary" href="${esc(SITE.android.url)}" download>${svgDL}下载 .apk</a>`
+      : `<span class="btn btn-primary" aria-disabled="true">${svgDL}下载包准备中</span>
+         <p class="hint">把 SITE.android.url 填成 APK 直链，这个按钮就会启用。</p>`}
+   ${SITE.android.qr ? `<div><img src="${esc(SITE.android.qr)}" alt="APK 二维码" width="104" height="104" style="border-radius:10px;background:#fff;padding:6px"></div>` : ''}`;
+
+const webCard =
+  `<h3>网页版</h3>
+   <p>${esc(SITE.web.note)}</p>
+   <div class="tags"><span>免安装</span><span>浏览器直接打开</span></div>
+   <a class="btn btn-secondary" href="${esc(SITE.web.url)}" target="_blank" rel="noopener">${svgPlay}打开网页版</a>
+   ${SITE.web.qr ? `<div><img src="${esc(SITE.web.qr)}" alt="网页版二维码" width="104" height="104" style="border-radius:10px;background:#fff;padding:6px"></div>` : ''}`;
+
+$('#download-cards').innerHTML =
+  `<div class="card fade">${androidCard}</div><div class="card fade d1">${webCard}</div>`;
+
+/* 安装说明 */
+$('#steps').innerHTML = SITE.steps.map((s) => `<li><span>${s}</span></li>`).join('');
+
+/* 页脚 */
+$('#foot-web').textContent = SITE.web.url;
+$('#foot-web').href = SITE.web.url;
+$('#foot-note').textContent = SITE.android.url ? '' : '安卓下载链接尚未配置（SITE.android.url）。';
+
+/* 进场淡入 + 图标描边（靠 .in 触发） */
+(function () {
+  const els = document.querySelectorAll('.fade');
+  if (!('IntersectionObserver' in window)) { els.forEach((e) => e.classList.add('in')); return; }
+  const io = new IntersectionObserver((es) => {
+    es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  els.forEach((e) => io.observe(e));
+})();
+</script>
+</body>
+</html>
