@@ -175,6 +175,10 @@
   .card .tags{display:flex;flex-wrap:wrap;gap:7px;justify-content:center}
   .card .tags span{font-size:12px;color:var(--faint);border:1px solid var(--line);border-radius:999px;padding:4px 11px}
   .card .btn{align-self:center;margin-top:auto}
+  /* 两个下载源（主 + 备用）竖排：卡片是 flex column，直接并列会左右分栏把版面撑乱 */
+  .dl-btns{display:flex;flex-direction:column;align-items:center;gap:9px;margin-top:auto}
+  .dl-btns .btn{width:100%;max-width:280px}
+  .dl-btns .hint{margin:2px 0 0}
   .hint{color:#e0b341;font-size:13px;margin:0}
 
   /* 安装说明 */
@@ -258,6 +262,7 @@
   <div class="wrap">
     <div id="foot-brand">花草中学</div>
     <div>网页版：<a id="foot-web" href="#" target="_blank" rel="noopener"></a></div>
+    <div id="foot-apk" style="margin-top:6px"></div>
     <div id="foot-note" class="hint"></div>
     <div style="margin-top:12px">下载链接在文件顶部的 <code>SITE</code> 配置里改。</div>
   </div>
@@ -267,22 +272,30 @@
 /* =====================================================================================
    ★ 官网内容 + 下载链接：都在下面这个 SITE 里改 ★
 
-   android.url  安卓 APK 直链（留空则按钮显示"准备中"）
-   web.url      网页版地址
+   android.url      安卓 APK **主**直链（留空则按钮显示"准备中"）
+   android.mirror   备用直链（可选）—— 主源是 NAS 短链、约一小时后会 403，务必填一个永久源兜底
+   web.url          网页版地址
    features[].icon  图标的 SVG 内部内容（24×24 画布；可用 <path>/<circle>/<rect>/<line> 等）
 ===================================================================================== */
 const SITE = {
   name: '花草中学',
   lede: '第一人称校园冒险。手机、电脑都能玩，打开就能进。',
   version: 'v1.0.0',
-  updated: '2026-10-03',
+  updated: '2026-10-04',
 
   android: {
-    url: 'https://github.com/CqwqY/game/releases/download/0.0.1/app-debug.apk',  // 安卓 APK 直链
-    size: '',                      // 可填安装包大小，如 '48 MB'（留空则不显示）
+    // 主下载源：自建 NAS（飞牛 fnOS）。快、文件新。
+    // ⚠ 这是**分享短链**，访问时服务端会 302 到一个带 sign 的临时地址（~1 小时后失效）。
+    //   所以下面配了 mirror 作为兜底 —— 主源挂了/过期了，用户点备用照样能下。
+    url: 'http://nas.lshserver.dpdns.org/f/d/YgSZ/%E8%8A%B1%E8%8D%89%E4%B8%AD%E5%AD%A6.apk',
+    // 备用源：GitHub Releases，永久有效、不过期、HTTPS。
+    mirror: 'https://github.com/CqwqY/game/releases/download/0.0.1/app-debug.apk',
+    size: '8.9 MB',             // 可填安装包大小（如 '48 MB'），留空则不显示
     min: 'Android 8.0 及以上',
     qr: '',                        // 可选：二维码图片链接
     note: '下载 .apk 后点击安装；若提示"未知来源"，允许一次即可。',
+    // 主源提示：说明为什么会有备用源，避免用户以为点错了
+    fallbackNote: '主链接来自自建 NAS，若一时打不开可换用 GitHub 备用源（永久有效）。',
   },
 
   web: {
@@ -378,7 +391,6 @@ $('#actions').innerHTML =
     ? `<a class="btn btn-primary" href="${esc(SITE.android.url)}" download>${svgDL}下载安卓版${SITE.android.size ? ` · ${esc(SITE.android.size)}` : ''}</a>`
     : `<span class="btn btn-primary" aria-disabled="true">${svgDL}下载安卓版 · 准备中</span>`) +
   `<a class="btn btn-secondary" href="${esc(SITE.web.url)}" target="_blank" rel="noopener">${svgPlay}网页版直接玩</a>`;
-
 $('#meta').innerHTML = [SITE.version, '更新于 ' + SITE.updated, '安卓 · 网页']
   .filter(Boolean).map((t) => `<span>${esc(t)}</span>`).join('');
 
@@ -387,15 +399,27 @@ $('#features').innerHTML = SITE.features.map((f) =>
   `<div class="cell fade"><span class="ico">${iconSvg(f.icon)}</span><h3>${esc(f.title)}</h3><p>${esc(f.desc)}</p></div>`).join('');
 
 /* 下载卡片 */
+const A = SITE.android;
+// 两个下载源：主源（NAS 短链，可能过期）+ 备用源（GitHub Releases，永久）。
+// 只有主源失效时才需要点备用，所以备用按钮做小一号、放在次要位置。
+const apkBtns = () => {
+  if (!A.url) {
+    return `<span class="btn btn-primary" aria-disabled="true">${svgDL}下载包准备中</span>
+            <p class="hint">把 SITE.android.url 填成 APK 直链，这个按钮就会启用。</p>`;
+  }
+  const main = `<a class="btn btn-primary" href="${esc(A.url)}" download>${svgDL}下载 .apk${A.size ? ` · ${esc(A.size)}` : ''}</a>`;
+  if (!A.mirror) return main;
+  return main +
+    `<a class="btn btn-secondary" href="${esc(A.mirror)}" download>备用源 · GitHub</a>` +
+    (A.fallbackNote ? `<p class="hint">${esc(A.fallbackNote)}</p>` : '');
+};
+
 const androidCard =
   `<h3>安卓版 App</h3>
-   <p>${esc(SITE.android.note)}</p>
-   <div class="tags"><span>${esc(SITE.android.min)}</span><span>${esc(SITE.version)}</span>${SITE.android.size ? `<span>${esc(SITE.android.size)}</span>` : ''}</div>
-   ${SITE.android.url
-      ? `<a class="btn btn-primary" href="${esc(SITE.android.url)}" download>${svgDL}下载 .apk</a>`
-      : `<span class="btn btn-primary" aria-disabled="true">${svgDL}下载包准备中</span>
-         <p class="hint">把 SITE.android.url 填成 APK 直链，这个按钮就会启用。</p>`}
-   ${SITE.android.qr ? `<div><img src="${esc(SITE.android.qr)}" alt="APK 二维码" width="104" height="104" style="border-radius:10px;background:#fff;padding:6px"></div>` : ''}`;
+   <p>${esc(A.note)}</p>
+   <div class="tags"><span>${esc(A.min)}</span><span>${esc(SITE.version)}</span>${A.size ? `<span>${esc(A.size)}</span>` : ''}</div>
+   <div class="dl-btns">${apkBtns()}</div>
+   ${A.qr ? `<div><img src="${esc(A.qr)}" alt="APK 二维码" width="104" height="104" style="border-radius:10px;background:#fff;padding:6px"></div>` : ''}`;
 
 const webCard =
   `<h3>网页版</h3>
@@ -414,6 +438,15 @@ $('#steps').innerHTML = SITE.steps.map((s) => `<li><span>${s}</span></li>`).join
 $('#foot-web').textContent = SITE.web.url;
 $('#foot-web').href = SITE.web.url;
 $('#foot-note').textContent = SITE.android.url ? '' : '安卓下载链接尚未配置（SITE.android.url）。';
+/* 页脚也放一份备用源：主源是 NAS 短链（约一小时后可能 403），
+   搜索/分享进来的用户未必看得到下载卡片里的备用按钮，页脚这份是最后一道兜底。 */
+(() => {
+  const el = document.getElementById('foot-apk');
+  if (!el || !SITE.android.mirror) return;
+  el.innerHTML =
+    '安卓：<a href="' + esc(SITE.android.url) + '" download>主源</a>' +
+    ' · <a href="' + esc(SITE.android.mirror) + '" download>备用源（GitHub）</a>';
+})();
 
 /* 进场淡入 + 图标描边（靠 .in 触发） */
 (function () {
