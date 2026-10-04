@@ -5,6 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>花草中学 · 官网下载</title>
 <meta name="description" content="花草中学 —— 第一人称校园冒险，支持安卓与网页版畅玩。" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="花草中学 · 官网下载" />
+<meta property="og:description" content="第一人称校园冒险。手机、电脑都能玩，打开就能进。" />
+<!-- 社交预览图：GitHub/微信 等分享卡片会抓这张。
+     ⚠ 必须是**绝对 URL** —— 分享平台不解析相对路径，填相对路径会抓不到图。
+     域名与根目录的 CNAME 文件保持一致（game.caiyz.dpdns.org）。 -->
+<meta property="og:image" content="https://game.caiyz.dpdns.org/assets/screenshot-thumb.webp" />
+<meta property="og:image:width" content="960" />
+<meta property="og:image:height" content="322" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="theme-color" content="#070b12" />
 <script>document.documentElement.classList.add('anim');</script>
 <style>
   :root{
@@ -79,6 +90,19 @@
   .meta{display:flex;flex-wrap:wrap;gap:9px;justify-content:center}
   .meta span{font-size:12.5px;color:var(--muted);border:1px solid var(--line);background:rgba(255,255,255,.03);
     border-radius:999px;padding:5px 12px}
+
+  /* 游戏截图：紧贴首屏，无上边框（真正的「接着首屏」，不是新章节） */
+  .shot-band{padding:0 0 12px;position:relative;z-index:1;text-align:center}
+  .shot{margin:0;position:relative}
+  .shot img{
+    display:block;width:100%;height:auto;border-radius:var(--radius);
+    border:1px solid var(--line-2);
+    box-shadow:0 24px 60px rgba(0,0,0,.55);
+  }
+  /* 顶部一道蓝到透明的高光，压住图片上缘、避免和上方文字区割裂 */
+  .shot::after{content:'';position:absolute;inset:0;border-radius:var(--radius);pointer-events:none;
+    background:linear-gradient(180deg,rgba(74,140,255,.16),transparent 34%)}
+  .shot-cap{margin:14px 0 0;color:var(--faint);font-size:13px}
 
   /* 区块 */
   section{padding:66px 0;border-top:1px solid var(--line);text-align:center}
@@ -171,6 +195,18 @@
     </div>
   </section>
 
+  <!-- 游戏截图：紧贴首屏，用普通 div 而不是 section —— section 自带 border-top + 66px padding，
+       插在首屏和「游戏特色」之间会多出一道分隔线，看着像两个独立区块。 -->
+  <div class="shot-band">
+    <div class="wrap">
+      <figure class="shot fade">
+        <img id="shot" src="assets/screenshot.webp" width="1600" height="536"
+             alt="花草中学校门实景：绿琉璃瓦门楼与「花草中学」匾额，门前有喷泉和同学" loading="lazy" decoding="async">
+      </figure>
+      <p class="shot-cap fade d1" id="shot-cap"></p>
+    </div>
+  </div>
+
   <section id="features">
     <div class="wrap">
       <h2 class="fade">游戏特色</h2>
@@ -233,6 +269,14 @@ const SITE = {
     note: '浏览器直接打开，无需安装。',
   },
 
+  // 游戏截图（首屏下方的大图）
+  shot: {
+    src: 'assets/screenshot.webp',
+    thumb: 'https://game.caiyz.dpdns.org/assets/screenshot-thumb.webp', // 分享卡片用，须绝对 URL
+    alt: '花草中学校门实景：绿琉璃瓦门楼与「花草中学」匾额，门前有喷泉和同学',
+    caption: '校门实景 · 开学了',
+  },
+
   features: [
     {
       title: '第一人称操作',
@@ -281,6 +325,24 @@ $('#brand').textContent = SITE.name;
 $('#title').textContent = SITE.name;
 $('#lede').textContent = SITE.lede;
 $('#foot-brand').textContent = SITE.name;
+
+/* 游戏截图：src/alt/说明都走 SITE.shot，换图只改配置不改 HTML。
+   ⚠ <img> 的 width/height 属性要跟实际图的宽高比一致（这里按 1600x536 写），
+      否则浏览器在图片加载前按错误比例占位，加载完成时页面会跳一下。 */
+(() => {
+  const s = SITE.shot;
+  if (!s || !s.src) return;
+  const img = document.getElementById('shot');
+  if (img) {
+    img.src = s.src;
+    if (s.alt) img.alt = s.alt;
+  }
+  const cap = document.getElementById('shot-cap');
+  if (cap && s.caption) cap.textContent = s.caption;
+  // 分享卡片的图也要跟着配置走（填成绝对 URL）
+  const og = document.querySelector('meta[property="og:image"]');
+  if (og && s.thumb) og.setAttribute('content', s.thumb);
+})();
 
 /* 顶部两个按钮 */
 $('#actions').innerHTML =
