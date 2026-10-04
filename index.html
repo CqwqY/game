@@ -33,8 +33,15 @@
     --accent-soft:rgba(74,140,255,.13);
     --accent-line:rgba(74,140,255,.30);
     --radius:16px;
+    /* 首屏背景图的兜底值（脚本会用 SITE.shot 里的值覆盖）。
+       写在这里而不是只写在 .hero 里，是为了 JS 没跑/被禁用时首屏也有图，不至于一片纯黑。 */
+    --hero-bg:url(assets/screenshot.webp);
+    --hero-pos:center 42%;
   }
   *{box-sizing:border-box}
+  /* 视觉隐藏但可被读屏软件朗读（不能用 display:none / visibility:hidden —— 那会让读屏也跳过） */
+  .sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;
+    clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
   html{scroll-behavior:smooth;scroll-padding-top:84px;background:var(--bg)}
   body{
     margin:0;color:var(--text);line-height:1.6;position:relative;overflow-x:hidden;
@@ -70,11 +77,45 @@
   nav a:hover{color:var(--text)}
   @media (max-width:640px){ nav{display:none} }
 
-  /* 首屏 */
-  .hero{padding:108px 0 88px;text-align:center;position:relative}
+  /* 首屏：游戏实景做**整块背景**，大字与按钮压在图上。
+     图本身是亮天空+白楼，直接当底文字会读不清，所以叠了两层压暗：
+       ① hero::before  —— 整块均匀压暗（radial 中心稍亮，把视线往中间的标题引）
+       ② 底部渐隐     —— 与下方深色背景无缝衔接，不会出现一条硬边
+     图固定不随滚动（background-attachment:fixed，与 body 的径向光斑一致），
+     小屏用 cover + 焦点偏上，避免裁到校门下半截。 */
+  .hero{
+    padding:132px 0 108px;text-align:center;position:relative;isolation:isolate;
+    /* --hero-bg / --hero-pos 由下方脚本按 SITE.shot 写入，换图不用碰样式表 */
+    background-image:var(--hero-bg);
+    background-size:cover;background-position:var(--hero-pos, center 42%);
+    background-repeat:no-repeat;
+  }
+  .hero::before{
+    content:'';position:absolute;inset:0;z-index:-1;
+    background:
+      radial-gradient(120% 88% at 50% 34%, rgba(7,11,18,.46), rgba(7,11,18,.80) 62%, rgba(7,11,18,.94)),
+      linear-gradient(180deg, rgba(7,11,18,.72), rgba(7,11,18,.30) 34%, rgba(7,11,18,.86));
+  }
+  /* 底部渐隐：把图片下缘溶进页面底色 */
+  .hero::after{
+    content:'';position:absolute;left:0;right:0;bottom:0;height:180px;z-index:-1;
+    background:linear-gradient(180deg, transparent, var(--bg-2) 88%);
+    pointer-events:none;
+  }
+  /* 小屏：图按 cover 裁得只剩中间一小块，文字相对更挤 → 遮罩加重、图缩小后退，
+     保证标题和按钮在任何手机宽度下都读得清。 */
+  @media (max-width:720px){
+    .hero{padding:112px 0 92px;background-size:auto 62%;background-position:center 34%}
+    .hero::before{background:
+      radial-gradient(120% 92% at 50% 32%, rgba(7,11,18,.62), rgba(7,11,18,.88) 60%, rgba(7,11,18,.96))}
+    h1{filter:drop-shadow(0 2px 12px rgba(0,0,0,.85)) drop-shadow(0 1px 3px rgba(0,0,0,.95))}
+  }
+  /* 描边 + 更重的阴影：图上文字要在任何亮度的背景上都读得清 */
   h1{margin:0 0 18px;font-size:clamp(38px,6vw,60px);line-height:1.08;font-weight:800;letter-spacing:-1px;
-    background:linear-gradient(180deg,#ffffff,#c3d7ff);-webkit-background-clip:text;background-clip:text;color:transparent}
-  .lede{margin:0 auto 34px;font-size:clamp(15px,2vw,18px);color:var(--muted);max-width:620px;line-height:1.7}
+    background:linear-gradient(180deg,#ffffff,#c3d7ff);-webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 2px 10px rgba(0,0,0,.75)) drop-shadow(0 1px 2px rgba(0,0,0,.9))}
+  .lede{margin:0 auto 34px;font-size:clamp(15px,2vw,18px);color:#c3cee2;max-width:620px;line-height:1.7;
+    text-shadow:0 1px 8px rgba(0,0,0,.8)}
   .actions{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:24px;justify-content:center}
   .btn{display:inline-flex;align-items:center;gap:9px;padding:14px 24px;border-radius:12px;font-size:15px;font-weight:600;
     border:1px solid transparent;cursor:pointer;white-space:nowrap;
@@ -83,26 +124,16 @@
   .btn-primary{background:linear-gradient(180deg,var(--accent-2),var(--accent));color:#041226;
     box-shadow:0 10px 28px rgba(74,140,255,.35),inset 0 1px 0 rgba(255,255,255,.28)}
   .btn-primary:hover{box-shadow:0 14px 36px rgba(74,140,255,.5),inset 0 1px 0 rgba(255,255,255,.35)}
-  .btn-secondary{background:rgba(255,255,255,.04);border-color:var(--line-2);color:var(--text)}
-  .btn-secondary:hover{border-color:var(--accent);color:var(--accent-2);background:rgba(74,140,255,.08)}
+  .btn-secondary{background:rgba(10,16,28,.62);border-color:var(--line-2);color:var(--text);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+  .btn-secondary:hover{border-color:var(--accent);color:var(--accent-2);background:rgba(74,140,255,.16)}
   .btn:active{transform:translateY(1px)}
   .btn[aria-disabled="true"]{opacity:.5;pointer-events:none;box-shadow:none}
+  /* 版本徽标压在图上，加一层深底才读得清 */
+  .meta span{background:rgba(10,16,28,.58);border-color:rgba(255,255,255,.16);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
   .meta{display:flex;flex-wrap:wrap;gap:9px;justify-content:center}
   .meta span{font-size:12.5px;color:var(--muted);border:1px solid var(--line);background:rgba(255,255,255,.03);
     border-radius:999px;padding:5px 12px}
-
-  /* 游戏截图：紧贴首屏，无上边框（真正的「接着首屏」，不是新章节） */
-  .shot-band{padding:0 0 12px;position:relative;z-index:1;text-align:center}
-  .shot{margin:0;position:relative}
-  .shot img{
-    display:block;width:100%;height:auto;border-radius:var(--radius);
-    border:1px solid var(--line-2);
-    box-shadow:0 24px 60px rgba(0,0,0,.55);
-  }
-  /* 顶部一道蓝到透明的高光，压住图片上缘、避免和上方文字区割裂 */
-  .shot::after{content:'';position:absolute;inset:0;border-radius:var(--radius);pointer-events:none;
-    background:linear-gradient(180deg,rgba(74,140,255,.16),transparent 34%)}
-  .shot-cap{margin:14px 0 0;color:var(--faint);font-size:13px}
 
   /* 区块 */
   section{padding:66px 0;border-top:1px solid var(--line);text-align:center}
@@ -192,20 +223,11 @@
       <p class="lede fade d1" id="lede">第一人称校园冒险。手机、电脑都能玩，打开就能进。</p>
       <div class="actions fade d2" id="actions"></div>
       <div class="meta fade d3" id="meta"></div>
+      <!-- 背景图是 CSS 画的，读屏软件读不到；这里给一份文字版，视觉上隐藏但可被朗读。
+           alt 文案走 SITE.shot.alt，与 <meta og:image> 共用同一份配置。 -->
+      <p class="sr-only" id="hero-shot-desc"></p>
     </div>
   </section>
-
-  <!-- 游戏截图：紧贴首屏，用普通 div 而不是 section —— section 自带 border-top + 66px padding，
-       插在首屏和「游戏特色」之间会多出一道分隔线，看着像两个独立区块。 -->
-  <div class="shot-band">
-    <div class="wrap">
-      <figure class="shot fade">
-        <img id="shot" src="assets/screenshot.webp" width="1600" height="536"
-             alt="花草中学校门实景：绿琉璃瓦门楼与「花草中学」匾额，门前有喷泉和同学" loading="lazy" decoding="async">
-      </figure>
-      <p class="shot-cap fade d1" id="shot-cap"></p>
-    </div>
-  </div>
 
   <section id="features">
     <div class="wrap">
@@ -269,12 +291,17 @@ const SITE = {
     note: '浏览器直接打开，无需安装。',
   },
 
-  // 游戏截图（首屏下方的大图）
+  // 首屏背景图（游戏实景，压在大字下面）
   shot: {
-    src: 'assets/screenshot.webp',
+    src: 'assets/screenshot.webp',   // 首屏 background-image 用的图
     thumb: 'https://game.caiyz.dpdns.org/assets/screenshot-thumb.webp', // 分享卡片用，须绝对 URL
+    // 背景定位：图里校门在上半部，42% 让门楼落在标题上方、地面在下半部。
+    // 小屏由 CSS 媒体查询单独覆盖（cover 裁得太碎，改成 auto 62% 更好看）。
+    position: 'center 42%',
+    // ⚠ 背景图是 CSS 画的，没有 <img>，所以**没有 alt 文本**（读屏软件会跳过纯装饰背景）。
+    //   这张图是首屏主体、承载站点识别度，若以后想让它可被读屏识别，
+    //   正确做法是加一个视觉隐藏的 <img alt="…"> 或 role="img" aria-label="…" 的容器，而不是留在这里。
     alt: '花草中学校门实景：绿琉璃瓦门楼与「花草中学」匾额，门前有喷泉和同学',
-    caption: '校门实景 · 开学了',
   },
 
   features: [
@@ -326,20 +353,21 @@ $('#title').textContent = SITE.name;
 $('#lede').textContent = SITE.lede;
 $('#foot-brand').textContent = SITE.name;
 
-/* 游戏截图：src/alt/说明都走 SITE.shot，换图只改配置不改 HTML。
-   ⚠ <img> 的 width/height 属性要跟实际图的宽高比一致（这里按 1600x536 写），
-      否则浏览器在图片加载前按错误比例占位，加载完成时页面会跳一下。 */
+/* 首屏背景图：src / 定位都走 SITE.shot，换图只改配置。
+   ⚠ background-image 是 CSS 里的 url()，**写在 <style> 里、JS 改不了**（除非改 CSS 变量），
+     所以这里先在 :root 上放一个变量，JS 只覆盖变量值 —— 换图不用碰样式表。 */
 (() => {
   const s = SITE.shot;
   if (!s || !s.src) return;
-  const img = document.getElementById('shot');
-  if (img) {
-    img.src = s.src;
-    if (s.alt) img.alt = s.alt;
+  const root = document.documentElement.style;
+  root.setProperty('--hero-bg', `url("${s.src}")`);
+  if (s.position) root.setProperty('--hero-pos', s.position);
+  // 背景图没有 alt，给读屏软件补一份文字描述（视觉隐藏）
+  if (s.alt) {
+    const d = document.getElementById('hero-shot-desc');
+    if (d) d.textContent = s.alt;
   }
-  const cap = document.getElementById('shot-cap');
-  if (cap && s.caption) cap.textContent = s.caption;
-  // 分享卡片的图也要跟着配置走（填成绝对 URL）
+  // 分享卡片的图也要跟着配置走（必须是绝对 URL）
   const og = document.querySelector('meta[property="og:image"]');
   if (og && s.thumb) og.setAttribute('content', s.thumb);
 })();
