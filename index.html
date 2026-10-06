@@ -1,462 +1,420 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang='zh-CN'>
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>花草中学 · 官网下载</title>
-<meta name="description" content="花草中学 —— 第一人称校园冒险，支持安卓与网页版畅玩。" />
-<meta property="og:type" content="website" />
-<meta property="og:title" content="花草中学 · 官网下载" />
-<meta property="og:description" content="第一人称校园冒险。手机、电脑都能玩，打开就能进。" />
-<!-- 社交预览图：GitHub/微信 等分享卡片会抓这张。
-     ⚠ 必须是**绝对 URL** —— 分享平台不解析相对路径，填相对路径会抓不到图。
-     域名与根目录的 CNAME 文件保持一致（game.caiyz.dpdns.org）。 -->
-<meta property="og:image" content="https://game.caiyz.dpdns.org/assets/screenshot-thumb.webp" />
-<meta property="og:image:width" content="960" />
-<meta property="og:image:height" content="322" />
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="theme-color" content="#070b12" />
-<script>document.documentElement.classList.add('anim');</script>
+<meta charset='UTF-8' />
+<meta name='viewport' content='width=device-width, initial-scale=1.0' />
+<title>花草中学 · 下载与玩法</title>
+<link rel='preconnect' href='https://fonts.googleapis.com' />
+<link rel='preconnect' href='https://fonts.gstatic.com' crossorigin />
+<link href='https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Zhi+Mang+Xing&display=swap' rel='stylesheet' />
 <style>
   :root{
-    --bg:#070b12;
-    --bg-2:#0a0f19;
-    --surface:rgba(255,255,255,.045);
-    --surface-2:rgba(255,255,255,.075);
-    --line:rgba(255,255,255,.08);
-    --line-2:rgba(255,255,255,.14);
-    --text:#eef2fb;
-    --muted:#9aa8c2;
-    --faint:#6b7894;
-    --accent:#4a8cff;
-    --accent-2:#79b0ff;
-    --accent-soft:rgba(74,140,255,.13);
-    --accent-line:rgba(74,140,255,.30);
-    --radius:16px;
-    /* 首屏背景图的兜底值（脚本会用 SITE.shot 里的值覆盖）。
-       写在这里而不是只写在 .hero 里，是为了 JS 没跑/被禁用时首屏也有图，不至于一片纯黑。 */
-    --hero-bg:url(assets/screenshot.webp);
-    --hero-pos:center 42%;
+    /* Kenny UI 官方配色（取自 src/ui/theme.js，全游戏统一色板） */
+    --kui-blue:#4a8fe0;
+    --kui-blue-deep:#1f4e8c;
+    --kui-blue-soft:#dceafb;
+    --kui-ink:#0b1522;
+    --kui-ink-soft:#33465c;
+    --kui-gold:#e8b53a;
+    --kui-gold-hi:#f7dc7a;
+    --kui-ok:#46b36b;
+    --kui-ok-deep:#2f8f50;
+    --kui-danger:#d9534f;
+
+    --paper:#eef4fc;     /* 淡蓝作业本 */
+    --rule:#bcd4f0;      /* 横线 */
+    --card:#ffffff;
   }
-  *{box-sizing:border-box}
-  /* 视觉隐藏但可被读屏软件朗读（不能用 display:none / visibility:hidden —— 那会让读屏也跳过） */
-  .sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;
-    clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
-  html{scroll-behavior:smooth;scroll-padding-top:84px;background:var(--bg)}
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
   body{
-    margin:0;color:var(--text);line-height:1.6;position:relative;overflow-x:hidden;
+    margin:0;
+    font-family:'Noto Sans SC','PingFang SC','Microsoft YaHei',system-ui,sans-serif;
+    color:var(--kui-ink);
     background:
-      radial-gradient(900px 540px at 50% -12%, rgba(74,140,255,.20), transparent 62%),
-      radial-gradient(760px 520px at 104% 2%, rgba(122,92,255,.12), transparent 58%),
-      radial-gradient(700px 500px at -6% 24%, rgba(74,140,255,.08), transparent 60%),
-      linear-gradient(180deg,var(--bg),var(--bg-2) 60%,var(--bg));
-    background-attachment:fixed;
-    font-family:"PingFang SC","Microsoft YaHei",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
-    -webkit-font-smoothing:antialiased;
+      repeating-linear-gradient(to bottom, transparent 0 33px, var(--rule) 33px 34px),
+      var(--paper);
+    line-height:1.7;
   }
-  /* 顶部细网点纹理（静态，营造质感；往下淡出） */
-  body::before{
-    content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
-    background-image:radial-gradient(rgba(255,255,255,.055) 1px, transparent 1px);
-    background-size:22px 22px;
-    -webkit-mask-image:radial-gradient(ellipse 85% 55% at 50% -5%, #000, transparent 72%);
-    mask-image:radial-gradient(ellipse 85% 55% at 50% -5%, #000, transparent 72%);
+
+  /* —— 手绘矩形：粗墨边 + 不规则圆角 + 硬阴影贴纸感 —— */
+  .sketch{
+    background:var(--card);
+    border:3px solid var(--kui-ink);
+    border-radius:18px 12px 20px 14px / 14px 18px 12px 20px;
+    box-shadow:6px 6px 0 var(--kui-ink);
+    padding:22px 24px;
   }
-  a{color:inherit;text-decoration:none}
-  .wrap{max-width:1020px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
-
-  /* 顶栏 */
-  header{position:sticky;top:0;z-index:20;border-bottom:1px solid var(--line);
-    background:rgba(7,11,18,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-  header .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
-  .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.4px}
-  .brand::before{content:'';width:20px;height:20px;border-radius:6px;
-    background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 0 16px rgba(74,140,255,.55)}
-  nav{display:flex;gap:26px;font-size:14px;color:var(--muted)}
-  nav a{transition:color .18s ease}
-  nav a:hover{color:var(--text)}
-  @media (max-width:640px){ nav{display:none} }
-
-  /* 首屏：游戏实景做**整块背景**，大字与按钮压在图上。
-     图本身是亮天空+白楼，直接当底文字会读不清，所以叠了两层压暗：
-       ① hero::before  —— 整块均匀压暗（radial 中心稍亮，把视线往中间的标题引）
-       ② 底部渐隐     —— 与下方深色背景无缝衔接，不会出现一条硬边
-     图固定不随滚动（background-attachment:fixed，与 body 的径向光斑一致），
-     小屏用 cover + 焦点偏上，避免裁到校门下半截。 */
-  .hero{
-    padding:132px 0 108px;text-align:center;position:relative;isolation:isolate;
-    /* --hero-bg / --hero-pos 由下方脚本按 SITE.shot 写入，换图不用碰样式表 */
-    background-image:var(--hero-bg);
-    background-size:cover;background-position:var(--hero-pos, center 42%);
-    background-repeat:no-repeat;
+  .sketch.b{
+    border-radius:14px 20px 12px 18px / 18px 14px 20px 12px;
+    box-shadow:5px 5px 0 var(--kui-blue-deep);
   }
-  .hero::before{
-    content:'';position:absolute;inset:0;z-index:-1;
-    background:
-      radial-gradient(120% 88% at 50% 34%, rgba(7,11,18,.46), rgba(7,11,18,.80) 62%, rgba(7,11,18,.94)),
-      linear-gradient(180deg, rgba(7,11,18,.72), rgba(7,11,18,.30) 34%, rgba(7,11,18,.86));
+  .sketch.g{
+    box-shadow:5px 5px 0 var(--kui-ok-deep);
   }
-  /* 底部渐隐：把图片下缘溶进页面底色 */
-  .hero::after{
-    content:'';position:absolute;left:0;right:0;bottom:0;height:180px;z-index:-1;
-    background:linear-gradient(180deg, transparent, var(--bg-2) 88%);
-    pointer-events:none;
+
+  .wrap{max-width:1040px;margin:0 auto;padding:0 18px;}
+
+  /* —— 导航 —— */
+  nav{
+    position:sticky;top:0;z-index:20;
+    background:var(--card);
+    border-bottom:3px solid var(--kui-ink);
+    display:flex;align-items:center;gap:14px;
+    padding:12px 18px;flex-wrap:wrap;
   }
-  /* 小屏：图按 cover 裁得只剩中间一小块，文字相对更挤 → 遮罩加重、图缩小后退，
-     保证标题和按钮在任何手机宽度下都读得清。 */
-  @media (max-width:720px){
-    .hero{padding:112px 0 92px;background-size:auto 62%;background-position:center 34%}
-    .hero::before{background:
-      radial-gradient(120% 92% at 50% 32%, rgba(7,11,18,.62), rgba(7,11,18,.88) 60%, rgba(7,11,18,.96))}
-    h1{filter:drop-shadow(0 2px 12px rgba(0,0,0,.85)) drop-shadow(0 1px 3px rgba(0,0,0,.95))}
+  nav .brand{
+    font-family:'Ma Shan Zheng',cursive;
+    font-size:26px;color:var(--kui-blue-deep);
+    border:3px solid var(--kui-ink);border-radius:14px 10px 14px 10px;
+    padding:2px 12px;box-shadow:3px 3px 0 var(--kui-ink);
+    background:var(--kui-blue-soft);
   }
-  /* 描边 + 更重的阴影：图上文字要在任何亮度的背景上都读得清 */
-  h1{margin:0 0 18px;font-size:clamp(38px,6vw,60px);line-height:1.08;font-weight:800;letter-spacing:-1px;
-    background:linear-gradient(180deg,#ffffff,#c3d7ff);-webkit-background-clip:text;background-clip:text;color:transparent;
-    filter:drop-shadow(0 2px 10px rgba(0,0,0,.75)) drop-shadow(0 1px 2px rgba(0,0,0,.9))}
-  .lede{margin:0 auto 34px;font-size:clamp(15px,2vw,18px);color:#c3cee2;max-width:620px;line-height:1.7;
-    text-shadow:0 1px 8px rgba(0,0,0,.8)}
-  .actions{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:24px;justify-content:center}
-  .btn{display:inline-flex;align-items:center;gap:9px;padding:14px 24px;border-radius:12px;font-size:15px;font-weight:600;
-    border:1px solid transparent;cursor:pointer;white-space:nowrap;
-    transition:background .18s ease,border-color .18s ease,color .18s ease,transform .14s ease,box-shadow .22s ease}
-  .btn svg{width:17px;height:17px}
-  .btn-primary{background:linear-gradient(180deg,var(--accent-2),var(--accent));color:#041226;
-    box-shadow:0 10px 28px rgba(74,140,255,.35),inset 0 1px 0 rgba(255,255,255,.28)}
-  .btn-primary:hover{box-shadow:0 14px 36px rgba(74,140,255,.5),inset 0 1px 0 rgba(255,255,255,.35)}
-  .btn-secondary{background:rgba(10,16,28,.62);border-color:var(--line-2);color:var(--text);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
-  .btn-secondary:hover{border-color:var(--accent);color:var(--accent-2);background:rgba(74,140,255,.16)}
-  .btn:active{transform:translateY(1px)}
-  .btn[aria-disabled="true"]{opacity:.5;pointer-events:none;box-shadow:none}
-  /* 版本徽标压在图上，加一层深底才读得清 */
-  .meta span{background:rgba(10,16,28,.58);border-color:rgba(255,255,255,.16);
-    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
-  .meta{display:flex;flex-wrap:wrap;gap:9px;justify-content:center}
-  .meta span{font-size:12.5px;color:var(--muted);border:1px solid var(--line);background:rgba(255,255,255,.03);
-    border-radius:999px;padding:5px 12px}
+  nav a.link{color:var(--kui-ink-soft);text-decoration:none;font-weight:600;margin:0 4px;}
+  nav a.link:hover{color:var(--kui-blue-deep);}
+  nav .spacer{flex:1;}
 
-  /* 区块 */
-  section{padding:66px 0;border-top:1px solid var(--line);text-align:center}
-  h2{margin:0;font-size:clamp(22px,3vw,28px);font-weight:700;letter-spacing:-.3px}
-  h2::after{content:'';display:block;width:34px;height:3px;border-radius:3px;margin:16px auto 0;
-    background:linear-gradient(90deg,var(--accent),var(--accent-2))}
-  .sec-note{margin:16px 0 40px;color:var(--faint);font-size:14.5px}
+  /* —— 按钮 —— */
+  .btn{
+    display:inline-block;cursor:pointer;text-decoration:none;
+    font-weight:700;font-size:16px;color:#fff;
+    background:var(--kui-blue);
+    border:3px solid var(--kui-ink);
+    border-radius:14px 10px 14px 10px;
+    box-shadow:4px 4px 0 var(--kui-ink);
+    padding:11px 20px;transition:transform .08s, box-shadow .08s;
+  }
+  .btn:hover{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--kui-ink);}
+  .btn.green{background:var(--kui-ok);box-shadow:4px 4px 0 var(--kui-ok-deep);}
+  .btn.green:hover{box-shadow:2px 2px 0 var(--kui-ok-deep);}
+  .btn.ghost{background:#fff;color:var(--kui-blue-deep);}
+  .btn .arr{margin-left:8px;vertical-align:-3px;}
 
-  /* 特色 */
-  .grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(218px,1fr));gap:16px}
-  .cell{background:linear-gradient(180deg,var(--surface),rgba(255,255,255,.015));
-    border:1px solid var(--line);border-radius:var(--radius);padding:28px 22px;
-    transition:transform .2s ease,border-color .2s ease,box-shadow .25s ease,background .2s ease}
-  .cell:hover{transform:translateY(-4px);border-color:var(--accent-line);
-    box-shadow:0 18px 40px rgba(0,0,0,.42),0 0 0 1px var(--accent-line)}
-  .ico{display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:13px;
-    background:var(--accent-soft);border:1px solid var(--accent-line);color:var(--accent-2);
-    margin-bottom:16px;transition:transform .25s cubic-bezier(.3,1.4,.5,1),background-color .2s ease,color .2s ease;
-    animation:icoGlow 3.6s ease-in-out infinite}
-  .ico svg{width:23px;height:23px;animation:icoIdle 3.6s ease-in-out infinite}
-  .cell:nth-child(2) .ico,.cell:nth-child(2) .ico svg{animation-delay:.45s}
-  .cell:nth-child(3) .ico,.cell:nth-child(3) .ico svg{animation-delay:.9s}
-  .cell:nth-child(4) .ico,.cell:nth-child(4) .ico svg{animation-delay:1.35s}
-  .cell:hover .ico{transform:translateY(-2px) scale(1.06);background:rgba(74,140,255,.22);color:#a9ccff;animation-play-state:paused}
-  .cell:hover .ico svg{animation-play-state:paused}
-  .cell h3{margin:0 0 7px;font-size:15.5px;font-weight:600}
-  .cell p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.68}
+  /* —— Hero —— */
+  header.hero{padding:54px 0 36px;text-align:center;position:relative;}
+  .hero h1{
+    font-family:'Ma Shan Zheng',cursive;
+    font-size:clamp(48px,9vw,92px);
+    margin:0;color:var(--kui-blue-deep);
+    text-shadow:4px 4px 0 var(--kui-gold-hi);
+    transform:rotate(-1.5deg);
+  }
+  .hero .sub{
+    font-family:'Zhi Mang Xing',cursive;
+    font-size:clamp(20px,3.4vw,30px);
+    color:var(--kui-ink-soft);margin:6px 0 18px;
+  }
+  .hero .tag{
+    display:inline-block;background:var(--kui-gold);
+    border:2px solid var(--kui-ink);border-radius:10px;
+    padding:4px 14px;font-weight:700;transform:rotate(1deg);
+    box-shadow:3px 3px 0 var(--kui-ink);
+  }
+  .hero .cta{margin-top:26px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
 
-  /* 下载 */
-  .cards{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:820px;margin:0 auto}
-  @media (max-width:720px){ .cards{grid-template-columns:1fr} }
-  .card{background:linear-gradient(180deg,var(--surface),rgba(255,255,255,.015));
-    border:1px solid var(--line);border-radius:var(--radius);padding:30px;
-    display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;
-    transition:transform .2s ease,border-color .2s ease,box-shadow .25s ease}
-  .card:hover{transform:translateY(-4px);border-color:var(--accent-line);box-shadow:0 18px 44px rgba(0,0,0,.44)}
-  .card h3{margin:0;font-size:18px;font-weight:700}
-  .card p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.7}
-  .card .tags{display:flex;flex-wrap:wrap;gap:7px;justify-content:center}
-  .card .tags span{font-size:12px;color:var(--faint);border:1px solid var(--line);border-radius:999px;padding:4px 11px}
-  .card .btn{align-self:center;margin-top:auto}
-  /* 两个下载源（主 + 备用）竖排：卡片是 flex column，直接并列会左右分栏把版面撑乱 */
-  .dl-btns{display:flex;flex-direction:column;align-items:center;gap:9px;margin-top:auto}
-  .dl-btns .btn{width:100%;max-width:280px}
-  .dl-btns .hint{margin:2px 0 0}
-  .hint{color:#e0b341;font-size:13px;margin:0}
+  /* —— 手绘涂鸦 —— */
+  .doodle{position:absolute;opacity:.9;pointer-events:none;}
+  .doodle.sun{top:18px;right:6%;width:84px;}
+  .doodle.plant{left:4%;bottom:-6px;width:74px;}
 
-  /* 安装说明 */
-  ol{margin:0 auto;padding:0;list-style:none;counter-reset:n;display:grid;gap:16px;max-width:720px}
-  ol li{counter-increment:n;display:flex;gap:12px;font-size:14.5px;color:var(--muted);justify-content:center}
-  ol li::before{content:counter(n);flex:0 0 auto;width:24px;height:24px;border-radius:50%;
-    border:1px solid var(--accent-line);color:var(--accent-2);background:var(--accent-soft);
-    font-size:12.5px;display:flex;align-items:center;justify-content:center;margin-top:2px}
-  ol b{color:var(--text);font-weight:600}
+  /* —— 通用区块标题 —— */
+  .sec{padding:30px 0;}
+  .sec h2{
+    font-family:'Ma Shan Zheng',cursive;
+    font-size:clamp(30px,5vw,44px);color:var(--kui-blue-deep);
+    margin:0 0 18px;display:inline-block;
+    background:linear-gradient(transparent 62%, var(--kui-gold-hi) 62% 92%, transparent 92%);
+  }
 
-  footer{border-top:1px solid var(--line);padding:32px 0 60px;color:var(--faint);font-size:12.5px;text-align:center;position:relative;z-index:1}
-  footer a{color:var(--muted)}
-  footer a:hover{color:var(--accent-2)}
-  footer code{background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:1px 7px;color:var(--muted)}
+  /* —— 图标方块（手绘墨边 + SVG 内联图标，无 emoji / 无外部字体） —— */
+  .ic{
+    width:46px;height:46px;border:3px solid var(--kui-ink);
+    border-radius:12px 8px 12px 8px;
+    display:flex;align-items:center;justify-content:center;margin-bottom:10px;
+    background:var(--kui-blue-soft);
+  }
+  .ic svg{width:30px;height:30px;display:block;}
 
-  /* 动效（仅进场 + 图标 + 悬停）：全部挂在 html.anim 下，脚本没跑也不会白屏 */
-  .anim .fade{opacity:0;transform:translateY(10px);transition:opacity .55s ease,transform .55s ease}
-  .anim .fade.in{opacity:1;transform:none}
-  .anim .fade.d1{transition-delay:.06s} .anim .fade.d2{transition-delay:.12s} .anim .fade.d3{transition-delay:.18s}
-  @keyframes icoIdle{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-2px) scale(1.05)}}
-  @keyframes icoGlow{0%,100%{box-shadow:0 0 0 rgba(74,140,255,0)}50%{box-shadow:0 0 16px rgba(74,140,255,.30)}}
+  /* —— 价值便签 —— */
+  .notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;}
+  .note{--base-rot:-1deg;transform:rotate(var(--base-rot));}
+  .note:nth-child(2n){--base-rot:1.2deg;}
+  .note h3{font-family:'Zhi Mang Xing',cursive;font-size:24px;margin:0 0 6px;color:var(--kui-blue-deep);}
+  .note p{margin:0;color:var(--kui-ink-soft);}
 
-  @media (prefers-reduced-motion: reduce){
-    *,*::before,*::after{transition:none!important;animation:none!important}
-    .fade{opacity:1!important;transform:none!important}
+  /* —— 玩法网格 —— */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;}
+  .tile{--base-rot:-.8deg;transform:rotate(var(--base-rot));}
+  .tile:nth-child(2n){--base-rot:1deg;}
+  .tile:nth-child(2n) .ic{background:var(--kui-gold-hi);}
+  .tile:nth-child(3n) .ic{background:#d6f0de;}
+  .tile h3{margin:0 0 4px;font-size:19px;}
+  .tile p{margin:0;color:var(--kui-ink-soft);font-size:14.5px;}
+
+  /* —— 平台 —— */
+  .plats{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;}
+  .plat{text-align:center;--base-rot:0deg;}
+  .plat .ic{margin:0 auto 12px;}
+  .plat:nth-child(2) .ic{background:#d6f0de;}
+  .plat:nth-child(3) .ic{background:var(--kui-gold-hi);}
+  .plat .big{font-family:'Ma Shan Zheng',cursive;font-size:30px;color:var(--kui-blue-deep);margin:0 0 6px;}
+
+  /* —— 卡片 hover 手绘晃动 —— */
+  .note,.tile,.plat{cursor:default;}
+  .note:hover,.tile:hover,.plat:hover{
+    animation:wobble .55s ease-in-out infinite;
+    will-change:transform;
+  }
+  @keyframes wobble{
+    0%   {transform:rotate(var(--base-rot,0deg));}
+    20%  {transform:rotate(calc(var(--base-rot,0deg) + 2.4deg));}
+    40%  {transform:rotate(calc(var(--base-rot,0deg) - 1.8deg));}
+    60%  {transform:rotate(calc(var(--base-rot,0deg) + 1.2deg));}
+    80%  {transform:rotate(calc(var(--base-rot,0deg) - .7deg));}
+    100% {transform:rotate(var(--base-rot,0deg));}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .note:hover,.tile:hover,.plat:hover{animation:none;}
+  }
+
+  /* —— 数据手绘圈 —— */
+  .stats{display:flex;gap:26px;flex-wrap:wrap;justify-content:center;padding:10px 0;}
+  .stat{text-align:center;}
+  .stat .circle{
+    width:104px;height:104px;margin:0 auto 8px;
+    border:3px solid var(--kui-ink);border-radius:52% 48% 50% 50% / 50% 52% 48% 50%;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Ma Shan Zheng',cursive;font-size:30px;color:var(--kui-blue-deep);
+    background:var(--kui-gold-hi);box-shadow:4px 4px 0 var(--kui-ink);
+  }
+  .stat:nth-child(2) .circle{background:var(--kui-blue-soft);transform:rotate(-3deg);}
+  .stat:nth-child(3) .circle{background:#d6f0de;transform:rotate(2deg);}
+  .stat:nth-child(4) .circle{background:#fbe0de;transform:rotate(-2deg);}
+  .stat .lab{font-weight:600;color:var(--kui-ink-soft);}
+
+  /* —— FAQ —— */
+  details.qa{
+    background:var(--card);border:3px solid var(--kui-ink);border-radius:14px 10px 14px 10px;
+    box-shadow:4px 4px 0 var(--kui-ink);padding:4px 18px;margin:12px 0;
+  }
+  details.qa summary{
+    cursor:pointer;font-weight:700;font-size:17px;padding:12px 0;list-style:none;
+  }
+  details.qa summary::-webkit-details-marker{display:none;}
+  details.qa summary::before{content:'+ ';color:var(--kui-gold);}
+  details.qa[open] summary::before{content:'− ';color:var(--kui-ok);}
+  details.qa p{margin:0 0 14px;color:var(--kui-ink-soft);}
+  details.qa b{color:var(--kui-blue-deep);}
+
+  /* —— 页脚 —— */
+  footer{
+    margin-top:34px;border-top:3px solid var(--kui-ink);
+    background:var(--kui-blue-deep);color:#eaf2fc;
+    padding:24px 18px;text-align:center;font-size:14px;
+  }
+  footer a{color:var(--kui-gold-hi);text-decoration:none;}
+
+  @media(max-width:560px){
+    .doodle{display:none;}
+    nav .link{display:none;}
   }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="wrap">
-    <div class="brand" id="brand">花草中学</div>
-    <nav>
-      <a href="#features">特色</a>
-      <a href="#download">下载</a>
-      <a href="#install">安装</a>
-    </nav>
+<nav>
+  <span class='brand'>花草中学</span>
+  <a class='link' href='#why'>玩法</a>
+  <a class='link' href='#modes'>模式</a>
+  <a class='link' href='#platforms'>平台</a>
+  <a class='link' href='#faq'>问答</a>
+  <span class='spacer'></span>
+  <a class='btn' href='https://play.caiyz.dpdns.org' target='_blank' rel='noopener'>在浏览器玩</a>
+</nav>
+
+<header class='hero'>
+  <!-- 手绘太阳涂鸦（金） -->
+  <svg class='doodle sun' viewBox='0 0 100 100' fill='none' stroke='#e8b53a' stroke-width='4' stroke-linecap='round'>
+    <circle cx='50' cy='50' r='22' fill='#f7dc7a'/>
+    <path d='M50 14 V4 M86 50 H96 M50 86 V96 M14 50 H4 M76 24 L83 17 M24 24 L17 17 M76 76 L83 83 M24 76 L17 83'/>
+    <circle cx='42' cy='46' r='2.5' fill='#0b1522' stroke='none'/>
+    <circle cx='58' cy='46' r='2.5' fill='#0b1522' stroke='none'/>
+    <path d='M40 58 Q50 66 60 58'/>
+  </svg>
+
+  <div class='wrap'>
+    <h1>花草中学</h1>
+    <div class='sub'>第一人称 · 3D 校园 · 联机狂飙</div>
+    <span class='tag'>0 安装 · 云存档 · 网页 / 安卓随时续玩</span>
+    <div class='cta'>
+      <a class='btn' href='https://play.caiyz.dpdns.org' target='_blank' rel='noopener'>立即在浏览器玩<svg class='arr' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='#fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M5 12 H19 M13 6 L19 12 L13 18'/></svg></a>
+      <a class='btn green' href='http://nas.lshserver.dpdns.org/f/d/YgSZ/%E8%8A%B1%E8%8D%89%E4%B8%AD%E5%AD%A6.apk' download>下载 Android APK<svg class='arr' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='#fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M12 3 V15 M7 10 L12 15 L17 10 M5 19 H19'/></svg></a>
+      <a class='btn ghost' href='https://github.com/CqwqY/game/releases/download/0.0.1/app-debug.apk' target='_blank' rel='noopener'>备用源 · GitHub</a>
+    </div>
   </div>
+
+  <!-- 手绘花草涂鸦（红+绿） -->
+  <svg class='doodle plant' viewBox='0 0 100 100' fill='none' stroke='#0b1522' stroke-width='4' stroke-linecap='round'>
+    <path d='M50 92 V40' stroke='#46b36b'/>
+    <path d='M50 60 Q30 52 28 34 Q48 38 50 56' fill='#d6f0de' stroke='#2f8f50'/>
+    <path d='M50 50 Q70 42 72 24 Q52 28 50 46' fill='#d6f0de' stroke='#2f8f50'/>
+    <circle cx='50' cy='30' r='10' fill='#fbe0de' stroke='#d9534f'/>
+    <circle cx='46' cy='28' r='2' fill='#d9534f' stroke='none'/>
+    <circle cx='54' cy='28' r='2' fill='#d9534f' stroke='none'/>
+  </svg>
 </header>
 
-<main>
-  <section class="hero">
-    <div class="wrap">
-      <h1 class="fade" id="title">花草中学</h1>
-      <p class="lede fade d1" id="lede">第一人称校园冒险。手机、电脑都能玩，打开就能进。</p>
-      <div class="actions fade d2" id="actions"></div>
-      <div class="meta fade d3" id="meta"></div>
-      <!-- 背景图是 CSS 画的，读屏软件读不到；这里给一份文字版，视觉上隐藏但可被朗读。
-           alt 文案走 SITE.shot.alt，与 <meta og:image> 共用同一份配置。 -->
-      <p class="sr-only" id="hero-shot-desc"></p>
-    </div>
-  </section>
+<section class='sec wrap' id='why'>
+  <h2>为什么好玩</h2>
+  <div class='notes'>
+    <div class='note sketch b'><h3>打开即玩</h3><p>浏览器点开就进，不用下载客户端、不用注册账号，几秒落地校园。</p></div>
+    <div class='note sketch'><h3>实时联机</h3><p>和好友同场狂飙、对战，状态毫秒级同步。</p></div>
+    <div class='note sketch g'><h3>云端续玩</h3><p>进度存在服务器，换电脑 / 换手机用同一账号登录接着玩，不丢档。</p></div>
+    <div class='note sketch b'><h3>弱机也流畅</h3><p>自适应分辨率 + 按设备选画质档，集显老机也能稳住可玩帧率。</p></div>
+  </div>
+</section>
 
-  <section id="features">
-    <div class="wrap">
-      <h2 class="fade">游戏特色</h2>
-      <p class="sec-note fade d1">在代码顶部的 SITE.features 里改（含图标）。</p>
-      <div class="grid-4" id="features"></div>
+<section class='sec wrap' id='modes'>
+  <h2>能玩什么</h2>
+  <div class='grid'>
+    <!-- 校园狂飙：奔跑小人 -->
+    <div class='tile sketch'>
+      <div class='ic'><svg viewBox='0 0 48 48' fill='none' stroke='#0b1522' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'>
+        <circle cx='19' cy='12' r='5' fill='#fff'/>
+        <path d='M19 17 L19 30'/>
+        <path d='M19 30 L12 41'/>
+        <path d='M19 30 L28 39'/>
+        <path d='M19 21 L10 25'/>
+        <path d='M19 21 L31 17'/>
+      </svg></div>
+      <h3>校园狂飙</h3><p>在教室、走廊、操场间第一人称疾跑穿梭，找近道、抢资源。</p>
     </div>
-  </section>
+    <!-- 对战混战：交叉双剑 -->
+    <div class='tile sketch b'>
+      <div class='ic'><svg viewBox='0 0 48 48' fill='none' stroke='#0b1522' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'>
+        <path d='M12 36 L34 14'/>
+        <path d='M12 14 L34 36'/>
+        <circle cx='23' cy='25' r='3' fill='#fff'/>
+      </svg></div>
+      <h3>对战混战</h3><p>多人同图竞速 / 对抗，实时排名与击杀反馈。</p>
+    </div>
+    <!-- 昼夜光影：半月带星 -->
+    <div class='tile sketch g'>
+      <div class='ic'><svg viewBox='0 0 48 48' fill='none' stroke='#0b1522' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'>
+        <path d='M31 11 a14 14 0 1 0 0 26 a10 10 0 0 1 0 -26 Z' fill='#f7dc7a'/>
+        <circle cx='13' cy='12' r='2' fill='#e8b53a' stroke='none'/>
+        <circle cx='16' cy='20' r='1.5' fill='#e8b53a' stroke='none'/>
+      </svg></div>
+      <h3>昼夜光影</h3><p>太阳东升西落，环境光与天空实时变化，白天黑夜两套氛围。</p>
+    </div>
+    <!-- 自适应性能：循环刷新箭头 -->
+    <div class='tile sketch'>
+      <div class='ic'><svg viewBox='0 0 48 48' fill='none' stroke='#0b1522' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'>
+        <path d='M12 30 A13 13 0 1 1 30 20'/>
+        <path d='M30 14 L30 22 L38 22'/>
+      </svg></div>
+      <h3>自适应性能</h3><p>掉帧自动降分辨率、回升再加回去，弱机不卡、强机更清晰。</p>
+    </div>
+    <!-- 跨端联机：手机+屏+连线 -->
+    <div class='tile sketch b'>
+      <div class='ic'><svg viewBox='0 0 48 48' fill='none' stroke='#0b1522' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'>
+        <rect x='9' y='17' width='13' height='21' rx='2' fill='#fff'/>
+        <rect x='25' y='13' width='15' height='17' rx='2' fill='#fff'/>
+        <path d='M22 27 H25'/>
+      </svg></div>
+      <h3>跨端联机</h3><p>网页端与安卓同场互通，手机也能和电脑好友一起玩。</p>
+    </div>
+  </div>
+</section>
 
-  <section id="download">
-    <div class="wrap">
-      <h2 class="fade">下载与游玩</h2>
-      <p class="sec-note fade d1">安卓下载安装包，或直接在浏览器里玩网页版。</p>
-      <div class="cards" id="download-cards"></div>
+<section class='sec wrap' id='platforms'>
+  <h2>在哪玩</h2>
+  <div class='plats'>
+    <!-- 网页：浏览器窗口 -->
+    <div class='plat sketch'>
+      <div class='ic'><svg viewBox='0 0 48 48' fill='none' stroke='#0b1522' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'>
+        <rect x='9' y='13' width='30' height='22' rx='3' fill='#fff'/>
+        <path d='M9 20 H39'/>
+        <circle cx='14' cy='16.5' r='1.6' fill='#d9534f' stroke='none'/>
+        <circle cx='19' cy='16.5' r='1.6' fill='#e8b53a' stroke='none'/>
+        <circle cx='24' cy='16.5' r='1.6' fill='#46b36b' stroke='none'/>
+      </svg></div>
+      <div class='big'>网页</div><p>Chrome / Edge / Safari 直接打开即玩，进度自动存云端。</p>
     </div>
-  </section>
+    <!-- 安卓：机器人 -->
+    <div class='plat sketch g'>
+      <div class='ic'><svg viewBox='0 0 48 48' fill='none' stroke='#0b1522' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'>
+        <path d='M17 22 a7 7 0 0 1 14 0' fill='#fff'/>
+        <line x1='15' y1='15' x2='12' y2='10'/>
+        <line x1='33' y1='15' x2='36' y2='10'/>
+        <rect x='16' y='24' width='16' height='13' rx='3' fill='#fff'/>
+        <circle cx='20' cy='24' r='1.6' fill='#0b1522' stroke='none'/>
+        <circle cx='28' cy='24' r='1.6' fill='#0b1522' stroke='none'/>
+      </svg></div>
+      <div class='big'>安卓</div><p>下载 APK 安装，与网页端同一账号、同一份云存档。</p>
+    </div>
+    <!-- 联机：网络节点 -->
+    <div class='plat sketch b'>
+      <div class='ic'><svg viewBox='0 0 48 48' fill='none' stroke='#0b1522' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'>
+        <circle cx='13' cy='24' r='4' fill='#fff'/>
+        <circle cx='35' cy='14' r='4' fill='#fff'/>
+        <circle cx='35' cy='34' r='4' fill='#fff'/>
+        <path d='M17 22 L31 16'/>
+        <path d='M17 26 L31 32'/>
+      </svg></div>
+      <div class='big'>联机</div><p>所有平台互通，实时同步，无需额外服务器设置。</p>
+    </div>
+  </div>
+</section>
 
-  <section id="install">
-    <div class="wrap">
-      <h2 class="fade">安卓安装说明</h2>
-      <p class="sec-note fade d1">装不上时按这几步排查。</p>
-      <ol class="fade d2" id="steps"></ol>
-    </div>
-  </section>
-</main>
+<section class='sec wrap'>
+  <div class='stats'>
+    <div class='stat'><div class='circle'>0</div><div class='lab'>安装步骤</div></div>
+    <div class='stat'><div class='circle'>60</div><div class='lab'>fps 自适应</div></div>
+    <div class='stat'><div class='circle'>2</div><div class='lab'>端互通</div></div>
+    <div class='stat'><div class='circle'>∞</div><div class='lab'>云同步</div></div>
+  </div>
+</section>
+
+<section class='sec wrap' id='faq'>
+  <h2>问答</h2>
+
+  <details class='qa' open>
+    <summary>怎么开始玩？</summary>
+    <p>点顶部「在浏览器玩」直接进；或下载安卓 APK 安装。无需注册，打开就能跑。</p>
+  </details>
+
+  <details class='qa'>
+    <summary>要先下载客户端吗？</summary>
+    <p>网页端<b>不用下载</b>，点开即玩。只有想在手机上玩才需要下载安卓 APK。</p>
+  </details>
+
+  <details class='qa'>
+    <summary>手机能玩吗？</summary>
+    <p>能。安卓装 APK 即可，与网页端同场联机、同一份云存档。</p>
+  </details>
+
+  <details class='qa'>
+    <summary>联机要收费吗？</summary>
+    <p>联机本身免费，进度走云端同步，不另收费用。</p>
+  </details>
+
+  <details class='qa'>
+    <summary>我的进度存在哪里？换电脑会丢吗？</summary>
+    <p><b>进度存在云端服务器</b>，不是存在本地浏览器。联机时实时同步到服务端；用同一账号在任意设备（网页 / 安卓）登录都能接着玩，不用手动导出。<b>离线时本机会暂存一份，联网后自动合并回云端</b>，所以换电脑、清了浏览器缓存都不会丢档。</p>
+  </details>
+
+  <details class='qa'>
+    <summary>在弱机上卡顿怎么办？</summary>
+    <p>游戏会<b>自动降分辨率</b>保帧率；也可在设置里手动把画质档调到 low、或把分辨率钉低一点。集显老机也能稳住可玩帧。</p>
+  </details>
+</section>
 
 <footer>
-  <div class="wrap">
-    <div id="foot-brand">花草中学</div>
-    <div>网页版：<a id="foot-web" href="#" target="_blank" rel="noopener"></a></div>
-    <div id="foot-apk" style="margin-top:6px"></div>
-    <div id="foot-note" class="hint"></div>
-    <div style="margin-top:12px">下载链接在文件顶部的 <code>SITE</code> 配置里改。</div>
-  </div>
+  <p>花草中学 · 第一人称 3D 校园 · 网页 / 安卓跨端联机</p>
+  <p><a href='https://play.caiyz.dpdns.org' target='_blank' rel='noopener'>在浏览器玩</a></p>
 </footer>
 
-<script>
-/* =====================================================================================
-   ★ 官网内容 + 下载链接：都在下面这个 SITE 里改 ★
-
-   android.url      安卓 APK **主**直链（留空则按钮显示"准备中"）
-   android.mirror   备用直链（可选）—— 主源是 NAS 短链、约一小时后会 403，务必填一个永久源兜底
-   web.url          网页版地址
-   features[].icon  图标的 SVG 内部内容（24×24 画布；可用 <path>/<circle>/<rect>/<line> 等）
-===================================================================================== */
-const SITE = {
-  name: '花草中学',
-  lede: '第一人称校园冒险。手机、电脑都能玩，打开就能进。',
-  version: 'v1.0.0',
-  updated: '2026-10-04',
-
-  android: {
-    // 主下载源：自建 NAS（飞牛 fnOS）。快、文件新。
-    // ⚠ 这是**分享短链**，访问时服务端会 302 到一个带 sign 的临时地址（~1 小时后失效）。
-    //   所以下面配了 mirror 作为兜底 —— 主源挂了/过期了，用户点备用照样能下。
-    url: 'http://nas.lshserver.dpdns.org/f/d/YgSZ/%E8%8A%B1%E8%8D%89%E4%B8%AD%E5%AD%A6.apk',
-    // 备用源：GitHub Releases，永久有效、不过期、HTTPS。
-    mirror: 'https://github.com/CqwqY/game/releases/download/0.0.1/app-debug.apk',
-    size: '8.9 MB',             // 可填安装包大小（如 '48 MB'），留空则不显示
-    min: 'Android 8.0 及以上',
-    qr: '',                        // 可选：二维码图片链接
-    note: '下载 .apk 后点击安装；若提示"未知来源"，允许一次即可。',
-    // 主源提示：说明为什么会有备用源，避免用户以为点错了
-    fallbackNote: '主链接来自自建 NAS，若一时打不开可换用 GitHub 备用源（永久有效）。',
-  },
-
-  web: {
-    url: 'https://play.caiyz.dpdns.org',
-    qr: '',                        // 可选：二维码图片链接
-    note: '浏览器直接打开，无需安装。',
-  },
-
-  // 首屏背景图（游戏实景，压在大字下面）
-  shot: {
-    src: 'assets/screenshot.webp',   // 首屏 background-image 用的图
-    thumb: 'https://game.caiyz.dpdns.org/assets/screenshot-thumb.webp', // 分享卡片用，须绝对 URL
-    // 背景定位：图里校门在上半部，42% 让门楼落在标题上方、地面在下半部。
-    // 小屏由 CSS 媒体查询单独覆盖（cover 裁得太碎，改成 auto 62% 更好看）。
-    position: 'center 42%',
-    // ⚠ 背景图是 CSS 画的，没有 <img>，所以**没有 alt 文本**（读屏软件会跳过纯装饰背景）。
-    //   这张图是首屏主体、承载站点识别度，若以后想让它可被读屏识别，
-    //   正确做法是加一个视觉隐藏的 <img alt="…"> 或 role="img" aria-label="…" 的容器，而不是留在这里。
-    alt: '花草中学校门实景：绿琉璃瓦门楼与「花草中学」匾额，门前有喷泉和同学',
-  },
-
-  features: [
-    {
-      title: '第一人称操作',
-      desc: '键盘与触屏都可操作，走路、跳跃、抓钩、载具齐全。',
-      icon: '<circle cx="12" cy="12" r="6.4"/><circle cx="12" cy="12" r="1.1"/><path d="M12 2.4v3.2M12 18.4v3.2M2.4 12h3.2M18.4 12h3.2"/>',
-    },
-    {
-      title: '联机同房',
-      desc: '和同学进同一房间，实时看到彼此。',
-      icon: '<circle cx="9" cy="8.4" r="3"/><path d="M3.6 19.6a5.4 5.4 0 0 1 10.8 0"/><path d="M15.4 6.3a3 3 0 0 1 0 5.6"/><path d="M17.6 19.6a5.6 5.6 0 0 0-2.1-4.3"/>',
-    },
-    {
-      title: '校园场景',
-      desc: '熟悉的校园地图，也可用编辑器自行搭建。',
-      icon: '<path d="M3 21h18"/><path d="M5 21V9.4L12 5l7 4.4V21"/><path d="M9.6 21v-5.4h4.8V21"/><path d="M9 11.4h.01M15 11.4h.01"/>',
-    },
-    {
-      title: '多端畅玩',
-      desc: '安卓与网页版同源，进度与功能一致。',
-      icon: '<rect x="2.5" y="4.5" width="12" height="8.4" rx="1.5"/><path d="M6.6 17h5"/><path d="M9 12.9V17"/><rect x="16.6" y="9.6" width="4.9" height="9.4" rx="1.5"/><path d="M19 16.6h.01"/>',
-    },
-  ],
-
-  steps: [
-    '点击「下载安卓版」，下载 <b>.apk</b> 安装包。',
-    '打开安装包；若系统提示「未知来源」，选择 <b>允许</b> 后继续。',
-    '安装完成后打开游戏登录即可；不想装 App 可直接用<b>网页版</b>。',
-  ],
-};
-/* ===================================================================================== */
-
-const $ = (s) => document.querySelector(s);
-const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) =>
-  ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-
-/* 把配置里的图标内容包成统一的线性 SVG（图标始终实心可见，不做隐形描边） */
-function iconSvg(inner) {
-  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${String(inner || '')}</svg>`;
-}
-
-const svgDL   = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>';
-const svgPlay = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5l6 3.5-6 3.5z" fill="currentColor" stroke="none"/></svg>';
-
-document.title = SITE.name + ' · 官网下载';
-$('#brand').textContent = SITE.name;
-$('#title').textContent = SITE.name;
-$('#lede').textContent = SITE.lede;
-$('#foot-brand').textContent = SITE.name;
-
-/* 首屏背景图：src / 定位都走 SITE.shot，换图只改配置。
-   ⚠ background-image 是 CSS 里的 url()，**写在 <style> 里、JS 改不了**（除非改 CSS 变量），
-     所以这里先在 :root 上放一个变量，JS 只覆盖变量值 —— 换图不用碰样式表。 */
-(() => {
-  const s = SITE.shot;
-  if (!s || !s.src) return;
-  const root = document.documentElement.style;
-  root.setProperty('--hero-bg', `url("${s.src}")`);
-  if (s.position) root.setProperty('--hero-pos', s.position);
-  // 背景图没有 alt，给读屏软件补一份文字描述（视觉隐藏）
-  if (s.alt) {
-    const d = document.getElementById('hero-shot-desc');
-    if (d) d.textContent = s.alt;
-  }
-  // 分享卡片的图也要跟着配置走（必须是绝对 URL）
-  const og = document.querySelector('meta[property="og:image"]');
-  if (og && s.thumb) og.setAttribute('content', s.thumb);
-})();
-
-/* 顶部两个按钮 */
-$('#actions').innerHTML =
-  (SITE.android.url
-    ? `<a class="btn btn-primary" href="${esc(SITE.android.url)}" download>${svgDL}下载安卓版${SITE.android.size ? ` · ${esc(SITE.android.size)}` : ''}</a>`
-    : `<span class="btn btn-primary" aria-disabled="true">${svgDL}下载安卓版 · 准备中</span>`) +
-  `<a class="btn btn-secondary" href="${esc(SITE.web.url)}" target="_blank" rel="noopener">${svgPlay}网页版直接玩</a>`;
-$('#meta').innerHTML = [SITE.version, '更新于 ' + SITE.updated, '安卓 · 网页']
-  .filter(Boolean).map((t) => `<span>${esc(t)}</span>`).join('');
-
-/* 特色（带图标） */
-$('#features').innerHTML = SITE.features.map((f) =>
-  `<div class="cell fade"><span class="ico">${iconSvg(f.icon)}</span><h3>${esc(f.title)}</h3><p>${esc(f.desc)}</p></div>`).join('');
-
-/* 下载卡片 */
-const A = SITE.android;
-// 两个下载源：主源（NAS 短链，可能过期）+ 备用源（GitHub Releases，永久）。
-// 只有主源失效时才需要点备用，所以备用按钮做小一号、放在次要位置。
-const apkBtns = () => {
-  if (!A.url) {
-    return `<span class="btn btn-primary" aria-disabled="true">${svgDL}下载包准备中</span>
-            <p class="hint">把 SITE.android.url 填成 APK 直链，这个按钮就会启用。</p>`;
-  }
-  const main = `<a class="btn btn-primary" href="${esc(A.url)}" download>${svgDL}下载 .apk${A.size ? ` · ${esc(A.size)}` : ''}</a>`;
-  if (!A.mirror) return main;
-  return main +
-    `<a class="btn btn-secondary" href="${esc(A.mirror)}" download>备用源 · GitHub</a>` +
-    (A.fallbackNote ? `<p class="hint">${esc(A.fallbackNote)}</p>` : '');
-};
-
-const androidCard =
-  `<h3>安卓版 App</h3>
-   <p>${esc(A.note)}</p>
-   <div class="tags"><span>${esc(A.min)}</span><span>${esc(SITE.version)}</span>${A.size ? `<span>${esc(A.size)}</span>` : ''}</div>
-   <div class="dl-btns">${apkBtns()}</div>
-   ${A.qr ? `<div><img src="${esc(A.qr)}" alt="APK 二维码" width="104" height="104" style="border-radius:10px;background:#fff;padding:6px"></div>` : ''}`;
-
-const webCard =
-  `<h3>网页版</h3>
-   <p>${esc(SITE.web.note)}</p>
-   <div class="tags"><span>免安装</span><span>浏览器直接打开</span></div>
-   <a class="btn btn-secondary" href="${esc(SITE.web.url)}" target="_blank" rel="noopener">${svgPlay}打开网页版</a>
-   ${SITE.web.qr ? `<div><img src="${esc(SITE.web.qr)}" alt="网页版二维码" width="104" height="104" style="border-radius:10px;background:#fff;padding:6px"></div>` : ''}`;
-
-$('#download-cards').innerHTML =
-  `<div class="card fade">${androidCard}</div><div class="card fade d1">${webCard}</div>`;
-
-/* 安装说明 */
-$('#steps').innerHTML = SITE.steps.map((s) => `<li><span>${s}</span></li>`).join('');
-
-/* 页脚 */
-$('#foot-web').textContent = SITE.web.url;
-$('#foot-web').href = SITE.web.url;
-$('#foot-note').textContent = SITE.android.url ? '' : '安卓下载链接尚未配置（SITE.android.url）。';
-/* 页脚也放一份备用源：主源是 NAS 短链（约一小时后可能 403），
-   搜索/分享进来的用户未必看得到下载卡片里的备用按钮，页脚这份是最后一道兜底。 */
-(() => {
-  const el = document.getElementById('foot-apk');
-  if (!el || !SITE.android.mirror) return;
-  el.innerHTML =
-    '安卓：<a href="' + esc(SITE.android.url) + '" download>主源</a>' +
-    ' · <a href="' + esc(SITE.android.mirror) + '" download>备用源（GitHub）</a>';
-})();
-
-/* 进场淡入 + 图标描边（靠 .in 触发） */
-(function () {
-  const els = document.querySelectorAll('.fade');
-  if (!('IntersectionObserver' in window)) { els.forEach((e) => e.classList.add('in')); return; }
-  const io = new IntersectionObserver((es) => {
-    es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-  }, { threshold: 0.12 });
-  els.forEach((e) => io.observe(e));
-})();
-</script>
 </body>
 </html>
